@@ -1,0 +1,34 @@
+<cdk-virtual-scroll-viewport itemSize="{{postPreviews.length}}">
+  <div *cdkVirtualFor="let post of postPreviews" class="post-container" (click)="deletePosts()">
+  <img src="{{post.postThumbnailUrl}}">
+
+  <div class="post-shorten-content">
+    <h2>{{post.title}}</h2>
+    <div [innerHTML]="post.excerpt"></div>
+
+    <div class="post-info">
+      <div class="author-info">
+        <img [src]="post.author.avatarUrl">
+        <span>{{post.author.name}}</span>
+      </div>
+
+      <div class="rest-info">
+        <fa-icon [icon]="clockIcon"></fa-icon>
+        <span>{{post.date | date}}</span>
+
+        <fa-icon [icon]="commentIcon"></fa-icon>
+        <span>{{post.commentCount}}</span>
+      </div>
+    </div>
+  </div>
+  </div>
+</cdk-virtual-scroll-viewport>
+
+<ngb-pagination
+  [pageSize]="postPreviews.length"
+  [collectionSize]="numberOfPosts"
+  [maxSize]="5"
+  [rotate]="true"
+  [boundaryLinks]="true"
+  (pageChange)="loadNextPage($event)"></ngb-pagination>
+
