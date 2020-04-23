@@ -1,6 +1,6 @@
 <cdk-virtual-scroll-viewport itemSize="{{postPreviews.length}}">
   <div *cdkVirtualFor="let post of postPreviews" class="post-container" (click)="deletePosts()">
-  <img src="{{post.postThumbnailUrl}}">
+  <img src="{{post.postThumbnailUrl}}" alt="post_thumbnail">
 
   <div class="post-shorten-content">
     <h2>{{post.title}}</h2>
