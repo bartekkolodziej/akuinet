@@ -1,0 +1,33 @@
+<img src="{{post ? post.thumbnailUrl : ''}}" alt="post_img" class="post-img">
+<div class="post-container">
+  <h1 [innerHtml]="post.title"></h1>
+
+  <div class="post-info">
+    <div>
+      <img src="{{post.author.avatarUrl}}" class="avatar">
+      <span>{{post.author.name}}</span>
+    </div>
+
+    <div>
+      <span>{{post.date | date}}</span>
+    </div>
+  </div>
+
+  <div class="content" [innerHTML]="post.content"></div>
+
+  <div class="comments">
+    <h4>{{post.comments.length}} comments</h4>
+    <div *ngFor="let comment of post.comments" class="comment-container">
+      <div class="comment-info">
+        <img src="{{comment.author.avatar_URL}}" class="avatar">
+        <span class="author-name">{{comment.author.name}}</span>
+        <span>{{comment.date | date}}</span>
+      </div>
+
+      <div [innerHtml]="comment.content"></div>
+      <div *ngIf="comment.like_count > 0" class="likes">
+        Liked by {{comment.like_count}} people
+      </div>
+    </div>
+  </div>
+</div>

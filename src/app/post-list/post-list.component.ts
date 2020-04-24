@@ -3,11 +3,9 @@ import {HttpClient} from '@angular/common/http';
 import {faClock, faComment} from '@fortawesome/free-solid-svg-icons';
 import {
   trigger,
-  state,
   style,
   animate,
-  transition, query, stagger,
-  // ...
+  transition, query, stagger
 } from '@angular/animations';
 
 @Component({
@@ -16,17 +14,17 @@ import {
   styleUrls: ['./post-list.component.scss'],
   animations: [
     trigger('inOutAnimation', [
-      transition('* => *', [ // each time the binding value changes
+      transition('* => *', [
         query(':leave', [
-          style({ left: 0, opacity: 1}),
-          stagger(100, [
-            animate('1s', style({ left: -2000, opacity: 0 }))
+          style({transform: 'translateX(0)', opacity: 1}),
+          stagger(-50, [
+            animate('0.5s ease', style({transform: 'translateX(-2000px)', opacity: 0}))
           ])
         ], {optional: true}),
         query(':enter', [
-          style({ left: 2000, opacity: 0}),
+          style({transform: 'translateX(2000px)', opacity: 0}),
           stagger(200, [
-            animate('1s ease', style({ left: 0, opacity: 1}))
+            animate('1s ease', style({transform: 'translateX(0)', opacity: 1}))
           ])
         ], {optional: true})
       ])
@@ -35,6 +33,7 @@ import {
 })
 export class PostListComponent implements OnInit {
 
+  page = 1;
   clockIcon = faClock;
   commentIcon = faComment;
 
@@ -45,33 +44,39 @@ export class PostListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.http.get('https://public-api.wordpress.com/rest/v1.1/sites/en.blog.wordpress.com/posts')
+    this.loadPosts();
+  }
+
+  loadPosts(page = 1): void {
+    window.scrollTo({top: 0, left: 0, behavior: 'smooth'} as ScrollOptions);
+    this.postPreviews = [];
+    this.http.get(`https://public-api.wordpress.com/rest/v1.1/sites/en.blog.wordpress.com/posts/?page=${page}&number=5`)
       .subscribe((res: any) => {
-        this.numberOfPosts = res.found;
+        if (!this.numberOfPosts) {
+          this.numberOfPosts = res.found;
+        }
         (res.posts as Array<any>).forEach(post => this.postPreviews.push({
           ID: post.ID,
           date: post.date,
           author: {name: post.author.name, avatarUrl: post.author.avatar_URL},
           title: post.title,
           excerpt: post.excerpt,
-          postThumbnailUrl: post.post_thumbnail ? post.post_thumbnail.URL : '',
-          commentCount: post.discussion.comment_count
+          content: '',
+          thumbnailUrl: post.post_thumbnail ? post.post_thumbnail.URL : '',
+          commentCount: post.discussion.comment_count,
         }));
       });
-  }
-
-  loadNextPage(dara) {
-   console.log(dara);
   }
 }
 
 interface PostPreview {
   ID: number;
   date: string;
-  author: {name: string, avatarUrl: string};
+  author: { name: string, avatarUrl: string };
   title: string;
   excerpt: string;
-  postThumbnailUrl: string;
+  content: string;
+  thumbnailUrl: string;
   commentCount: number;
 }
 

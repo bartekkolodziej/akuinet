@@ -1,34 +1,35 @@
-<cdk-virtual-scroll-viewport itemSize="{{postPreviews.length}}">
-  <div *cdkVirtualFor="let post of postPreviews" class="post-container" (click)="deletePosts()">
-  <img src="{{post.postThumbnailUrl}}" alt="post_thumbnail">
+<div [@inOutAnimation]="postPreviews.length">
+  <div *ngFor="let post of postPreviews"
+       class="post-container">
+    <img src="{{post.thumbnailUrl}}">
 
-  <div class="post-shorten-content">
-    <h2>{{post.title}}</h2>
-    <div [innerHTML]="post.excerpt"></div>
+    <div class="post-shorten-content">
+      <h1 [routerLink]="'post-details/' + post.ID" [innerHtml]="post.title"></h1>
+      <div [innerHTML]="post.excerpt"></div>
 
-    <div class="post-info">
-      <div class="author-info">
-        <img [src]="post.author.avatarUrl">
-        <span>{{post.author.name}}</span>
-      </div>
+      <div class="post-info">
+        <div class="author-info">
+          <img [src]="post.author.avatarUrl">
+          <span>{{post.author.name}}</span>
+        </div>
 
-      <div class="rest-info">
-        <fa-icon [icon]="clockIcon"></fa-icon>
-        <span>{{post.date | date}}</span>
+        <div class="rest-info">
+          <fa-icon [icon]="clockIcon"></fa-icon>
+          <span>{{post.date | date}}</span>
 
-        <fa-icon [icon]="commentIcon"></fa-icon>
-        <span>{{post.commentCount}}</span>
+          <fa-icon [icon]="commentIcon"></fa-icon>
+          <span>{{post.commentCount}}</span>
+        </div>
       </div>
     </div>
   </div>
-  </div>
-</cdk-virtual-scroll-viewport>
+</div>
 
 <ngb-pagination
-  [pageSize]="postPreviews.length"
+  [(page)]="page"
+  [pageSize]="5"
   [collectionSize]="numberOfPosts"
   [maxSize]="5"
   [rotate]="true"
   [boundaryLinks]="true"
-  (pageChange)="loadNextPage($event)"></ngb-pagination>
-
+  (pageChange)="loadPosts($event)"></ngb-pagination>
